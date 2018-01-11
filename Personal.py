@@ -3,6 +3,7 @@ import time
 import datetime
 import asyncio
 import random
+import os
 
 from discord.ext import commands
 from discord.ext.commands import Bot
@@ -159,5 +160,6 @@ async def on_message(message):
                 await bot.send_message(message.author, ":x: | Please, Bot ID's Only In #bot-requests")
     await bot.process_commands(message)
 
-
-bot.run("NDAwNDY3ODgxOTQ0NTQ3MzI4.DTcETg.cRcBPp6ncDZG_uy8qiy9OQmFk-c")
+if not os.environ.get('TOKEN'):
+        print("No Token Found")
+bot.run(os.environ.get('TOKEN').strip('\"'))
