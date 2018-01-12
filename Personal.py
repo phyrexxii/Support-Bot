@@ -9,7 +9,7 @@ from discord.ext import commands
 from discord.ext.commands import Bot
 from random import randint
 
-bot = commands.Bot(command_prefix = "s-")
+bot = commands.Bot(command_prefix = commands.when_mentioned_or("s-"))
 tu = datetime.datetime.now()
 version = "Support Bot v0.1"
 startup_extensions = ["cogs.games"]
