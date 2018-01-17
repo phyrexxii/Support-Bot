@@ -116,17 +116,25 @@ async def iamasync(ctx):
 async def verify(ctx, member : discord.Member = None):
     """Verify a members Bot"""
     user_roles = [r.name.lower() for r in ctx.message.author.roles]
+    
 
     if "admin" in user_roles:
         if member is None:
             await bot.say(":x: | Please `Tag` A `Bot` To `Verify`!")
+        
         else:
-            oldrole = discord.utils.get(member.server.roles, name = "Not Yet Verified")
-            newrole = discord.utils.get(member.server.roles, name = "Verified Bot")
-            await bot.add_roles(member, newrole)
-            await asyncio.sleep(1)
-            await bot.remove_roles(member, oldrole)
-            await bot.add_reaction(ctx.message, "\U00002705")
+            try:
+                oldrole = discord.utils.get(member.server.roles, name = "Not Yet Verified")
+                newrole = discord.utils.get(member.server.roles, name = "Verified Bot")
+                await bot.add_roles(member, newrole)
+                await asyncio.sleep(1)
+                await bot.remove_roles(member, oldrole)
+                await bot.add_reaction(ctx.message, "\U00002705")
+                chan = discord.Object('402963004183805962')
+                em = discord.Embed(title="Bot verified", description="{0} was verified by {1}".format(member.mention, ctx.message.author.mention))
+                await bot.send_message(chan, embed=em)
+            except:
+                await bot.say(":x: Error verifying that bot!")
 
 @bot.event
 async def on_member_join(member):
