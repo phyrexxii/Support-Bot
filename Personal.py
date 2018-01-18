@@ -124,6 +124,12 @@ async def verify(ctx, member : discord.Member = None):
         
         else:
             try:
+                botnum = 0
+                for users in member.server.members:
+                  if users.bot is True:
+                        botnum += 1
+                else:
+                        pass
                 oldrole = discord.utils.get(member.server.roles, name = "Not Yet Verified")
                 newrole = discord.utils.get(member.server.roles, name = "Verified Bot")
                 await bot.add_roles(member, newrole)
@@ -132,6 +138,7 @@ async def verify(ctx, member : discord.Member = None):
                 await bot.add_reaction(ctx.message, "\U00002705")
                 chan = discord.Object('402963004183805962')
                 em = discord.Embed(title="Bot verified", description="{0} was verified by {1}".format(member.mention, ctx.message.author.mention))
+                em.set_footer(text="Updated bot count: {}".format(botnum))
                 await bot.send_message(chan, embed=em)
             except:
                 await bot.say(":x: Error verifying that bot!")
@@ -141,6 +148,35 @@ async def on_member_join(member):
     if member.bot is True:
         role = discord.utils.get(member.server.roles, name = "Not Yet Verified")
         await bot.add_roles(member, role)
+    else:
+        join = discord.Object('403359372098535424')
+        users = sum(1 for _ in bot.get_all_members())
+        em = discord.Embed(description="**ID**: {}".format(member.id), color=0x00ff00)
+        em.set_author(name="{0} has joined {1}".format(member, member.server.name), icon_url=member.avatar_url)
+        em.set_footer(text="Updated member count: {}".format(users))
+        await bot.send_message(join, embed=em)
+        
+@bot.event
+async def on_member_remove(member):
+    if member.bot is True:
+        botnum = 0
+        for users in member.server.members:
+                if users.bot is True:
+                        botnum += 1
+                else:
+                        pass
+        em = discord.Embed(description="**ID**: {}".format(member.id), color=0xff0000)
+        em.set_author(name="{0} was removed from {1}".format(member, member.server.name), icon_url=member.avatar_url)
+        em.set_footer(text="Updated bot count: {}".format(botnum))
+        await bot.say(embed=em)
+    else:
+        join = discord.Object('403359372098535424')
+        users = sum(1 for _ in bot.get_all_members())
+        em = discord.Embed(description="**ID**: {}".format(member.id), color=0xff0000)
+        em.set_author(name="{0} has left {1}".format(member, member.server.name), icon_url=member.avatar_url)
+        em.set_footer(text="Updated member count: {}".format(users))
+        await bot.send_message(join, embed=em)
+  
 
 @bot.event
 async def on_message(message):
